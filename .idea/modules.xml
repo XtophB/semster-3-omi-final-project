@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/amore-mio/amore-mio.iml" filepath="$PROJECT_DIR$/amore-mio/amore-mio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/semster-3-omi-final-project.iml" filepath="$PROJECT_DIR$/.idea/semster-3-omi-final-project.iml" />
+    </modules>
+  </component>
+</project>
