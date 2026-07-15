@@ -1,7 +1,6 @@
 package com.amoremio.store;
 
 import com.amoremio.ingredients.Ingredient;
-import com.amoremio.ingredients.IngredientFactory;
 import com.amoremio.ingredients.IngredientName;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -10,6 +9,8 @@ import java.util.List;
 public class Storage {
   private final EnumMap<IngredientName, ArrayList<Ingredient>> inventory;
   private final Supplier supplier;
+  private static final int TARGET_STOCK = 10;
+  private static final int EXPIRY_OFFSET = 7;
 
   public Storage(Supplier supplier) {
     this.inventory = new EnumMap<>(IngredientName.class);
@@ -27,8 +28,8 @@ public class Storage {
   }
 
   public Ingredient getIngredient(IngredientName name) {
-    if (inventory.get(name).size() < 5) {
-      supplier.deliverIngredients(this, name, 10, 7);
+    if (inventory.get(name).size() < TARGET_STOCK) {
+      supplier.deliverIngredients(this, name, TARGET_STOCK, EXPIRY_OFFSET);
     }
     Ingredient retrievedItem = inventory.get(name).getFirst();
     inventory.get(name).removeFirst();
