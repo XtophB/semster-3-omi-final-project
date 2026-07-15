@@ -1,5 +1,6 @@
-package com.amoremio.employee;
+package com.amoremio.employee.roles;
 
+import com.amoremio.employee.Employee;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +16,10 @@ public class DeliveryBoy extends Employee {
   }
 
   @Override
-  public float getActualPay() {
-    return super.getActualPay() + (deliveredAmount * deliveryBonusMultiplier);
+  public void getPaid() {
+    float standardPay = getBasePay() * getPayMultiplier();
+    float deliveryBonus = deliveredAmount * deliveryBonusMultiplier;
+    setBalance(getBalance() + standardPay + deliveryBonus);
+    this.deliveredAmount = 0;
   }
 }
