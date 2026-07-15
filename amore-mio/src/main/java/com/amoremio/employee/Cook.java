@@ -7,6 +7,4 @@ public class Cook extends Employee{
   public Cook(int basePay, float payMultiplier) {
     super(basePay, payMultiplier);
   }
-  public void cookPizza(){
-  }
 }

@@ -14,4 +14,7 @@ public abstract class Employee {
     this.basePay = basePay;
     this.payMultiplier = payMultiplier;
   }
+  public float getActualPay() {
+    return basePay * payMultiplier;
+  }
 }
