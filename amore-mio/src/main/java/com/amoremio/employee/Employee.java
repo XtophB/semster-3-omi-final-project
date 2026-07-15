@@ -8,13 +8,14 @@ import lombok.Setter;
 public abstract class Employee {
   private int basePay;
   private float payMultiplier;
-  private float actualPay;
+  private float balance;
 
   public Employee(int basePay, float payMultiplier) {
     this.basePay = basePay;
     this.payMultiplier = payMultiplier;
+    this.balance = 0;
   }
-  public float getActualPay() {
-    return basePay * payMultiplier;
+  public void getPaid() {
+    balance += basePay * payMultiplier;
   }
 }
