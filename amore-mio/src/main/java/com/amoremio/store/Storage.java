@@ -27,12 +27,18 @@ public class Storage {
     }
   }
 
-  public Ingredient getIngredient(IngredientName name) {
+  public boolean quantityCheck(Ingredient name) {
     if (inventory.get(name).size() < TARGET_STOCK) {
-      supplier.deliverIngredients(this, name, TARGET_STOCK, EXPIRY_OFFSET);
+      //supplier.deliverIngredients(this, name, TARGET_STOCK, EXPIRY_OFFSET);
+      return false;
     }
-    Ingredient retrievedItem = inventory.get(name).getFirst();
-    inventory.get(name).removeFirst();
-    return retrievedItem;
+    return true;
+  }
+
+  public Ingredient consumeIngredient(IngredientName name) {
+    if (inventory.get(name).size() < TARGET_STOCK) {
+      throw new IllegalStateException("Not enough " + name + " in storage. Please restock.");
+    }
+    return inventory.get(name).removeFirst();
   }
 }

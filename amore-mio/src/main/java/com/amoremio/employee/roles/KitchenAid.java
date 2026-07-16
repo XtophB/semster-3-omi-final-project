@@ -24,8 +24,8 @@ public class KitchenAid extends Employee {
     for (OrderedPizza pizza : orderedPizzas) {
       pizzaBuilder.createPizza();
 
-      Dough dough = (Dough) storage.getIngredient(IngredientName.DOUGH);
-      Sauce sauce = (Sauce) storage.getIngredient(IngredientName.SAUCE);
+      Dough dough = (Dough) storage.consumeIngredient(IngredientName.DOUGH);
+      Sauce sauce = (Sauce) storage.consumeIngredient(IngredientName.SAUCE);
 
       pizzaBuilder.buildDough(dough);
       pizzaBuilder.buildSauce(sauce);
