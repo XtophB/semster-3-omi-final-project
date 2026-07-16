@@ -1,7 +1,8 @@
 package com.amoremio.ingredients;
 
-public enum DoughType {
+public enum DoughStyle {
   THICK,
   THIN,
-  FLAT_BREAD
+  SE_EU_STYLE,
+  STANDARD
 }
