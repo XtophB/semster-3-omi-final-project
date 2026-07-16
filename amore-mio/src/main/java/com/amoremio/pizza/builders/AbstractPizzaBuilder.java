@@ -15,6 +15,7 @@ public abstract class AbstractPizzaBuilder implements PizzaBuilder {
 
   public AbstractPizzaBuilder(PizzaType pizzaType) {
     this.pizzaType = pizzaType;
+    createPizza();
   }
 
   @Override
