@@ -33,7 +33,6 @@ public abstract class AbstractPizzaBuilder implements PizzaBuilder {
   public void buildToppings(List<Ingredient> toppings) {
     for (Ingredient topping : toppings) {
       pizza.addIngredient(topping);
-      pizza.setPrice(pizza.getPrice() + topping.getPrice());
     }
   }
 
