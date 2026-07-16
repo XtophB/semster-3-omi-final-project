@@ -7,7 +7,7 @@ import com.amoremio.pizza.PizzaType;
 public class StandardBuilder extends AbstractPizzaBuilder {
 
   public StandardBuilder() {
-    super(PizzaType.SOUTH_EAST_EU);
+    super(PizzaType.STANDARD);
   }
 
   @Override
