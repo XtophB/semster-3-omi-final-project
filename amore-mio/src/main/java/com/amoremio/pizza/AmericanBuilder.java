@@ -11,20 +11,4 @@ public class AmericanBuilder extends AbstractPizzaBuilder {
     super(PizzaType.AMERICAN);
   }
 
-  @Override
-  public void buildDough(Dough dough) {
-    pizza.addIngredient(dough);
-  }
-
-  @Override
-  public void buildSauce(Sauce sauce) {
-    pizza.addIngredient(sauce);
-  }
-
-  @Override
-  public void buildToppings(List<Ingredient> toppings) {
-    for (Ingredient topping : toppings) {
-      pizza.addIngredient(topping);
-    }
-  }
 }

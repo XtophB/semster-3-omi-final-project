@@ -11,20 +11,4 @@ public class NeapolitanBuilder extends AbstractPizzaBuilder {
     super(PizzaType.NEAPOLITAN);
   }
 
-  @Override
-  public void buildDough(Dough dough) {
-    pizza.addIngredient(dough);
-  }
-
-  @Override
-  public void buildSauce(Sauce sauce) {
-    pizza.addIngredient(sauce);
-  }
-
-  @Override
-  public void buildToppings(List<Ingredient> toppings) {
-    for (Ingredient topping : toppings) {
-      pizza.addIngredient(topping);
-    }
-  }
 }

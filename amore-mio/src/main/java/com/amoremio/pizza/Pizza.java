@@ -4,9 +4,11 @@ import com.amoremio.ingredients.Ingredient;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class Pizza {
+  @Setter
   private float price;
   private PizzaType pizzaType;
   private List<Ingredient> ingredients;

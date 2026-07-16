@@ -1,5 +1,9 @@
 package com.amoremio.pizza;
 
+import com.amoremio.ingredients.Dough;
+import com.amoremio.ingredients.Ingredient;
+import com.amoremio.ingredients.Sauce;
+import java.util.List;
 import lombok.Getter;
 
 public abstract class AbstractPizzaBuilder implements PizzaBuilder {
@@ -9,6 +13,24 @@ public abstract class AbstractPizzaBuilder implements PizzaBuilder {
 
   public AbstractPizzaBuilder(PizzaType pizzaType) {
     this.pizzaType = pizzaType;
+  }
+
+  @Override
+  public void buildDough(Dough dough) {
+    pizza.addIngredient(dough);
+  }
+
+  @Override
+  public void buildSauce(Sauce sauce) {
+    pizza.addIngredient(sauce);
+  }
+
+  @Override
+  public void buildToppings(List<Ingredient> toppings) {
+    for (Ingredient topping : toppings) {
+      pizza.addIngredient(topping);
+      pizza.setPrice(pizza.getPrice() + topping.getPrice());
+    }
   }
 
   public void createPizza(){
