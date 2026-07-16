@@ -42,7 +42,9 @@ public class IngredientFactory {
       case SALAMI -> new Salami(expiryDayOffset);
       case ONION -> new Onion(expiryDayOffset);
       case CORN -> new Corn(expiryDayOffset);
-      case CHILLIFLAKES -> new ChilliFlake(expiryDayOffset);
+      case CHILLI_FLAKE -> new ChilliFlake(expiryDayOffset);
+      case DOUGH -> new Dough(expiryDayOffset);
+      case SAUCE ->  new Sauce(expiryDayOffset);
     };
   }
 }

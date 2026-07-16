@@ -13,5 +13,7 @@ public enum IngredientName {
   SALAMI,
   ONION,
   CORN,
-  CHILLIFLAKES
+  CHILLI_FLAKE,
+  DOUGH,
+  SAUCE
 }

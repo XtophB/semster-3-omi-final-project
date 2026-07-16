@@ -5,7 +5,7 @@ import com.amoremio.ingredients.IngredientName;
 
 public class ChilliFlake extends Ingredient{
   private static final float PRICE = 0.5f;
-  private static final IngredientName NAME = IngredientName.CHILLIFLAKES;
+  private static final IngredientName NAME = IngredientName.CHILLI_FLAKE;
 
   public ChilliFlake(int expiryDayOffset) {
     super(NAME, PRICE, expiryDayOffset);
