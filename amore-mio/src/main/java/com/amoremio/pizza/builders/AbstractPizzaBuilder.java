@@ -1,8 +1,10 @@
-package com.amoremio.pizza;
+package com.amoremio.pizza.builders;
 
 import com.amoremio.ingredients.Dough;
 import com.amoremio.ingredients.Ingredient;
 import com.amoremio.ingredients.Sauce;
+import com.amoremio.pizza.Pizza;
+import com.amoremio.pizza.PizzaType;
 import java.util.List;
 import lombok.Getter;
 

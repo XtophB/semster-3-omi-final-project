@@ -1,4 +1,4 @@
-package com.amoremio.pizza;
+package com.amoremio.pizza.builders;
 
 import com.amoremio.ingredients.Dough;
 import com.amoremio.ingredients.Ingredient;

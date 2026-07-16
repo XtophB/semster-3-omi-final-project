@@ -1,5 +1,7 @@
-package com.amoremio.pizza;
+package com.amoremio.pizza.builders;
 
+
+import com.amoremio.pizza.PizzaType;
 
 public class SouthEastEuBuilder extends AbstractPizzaBuilder {
 
