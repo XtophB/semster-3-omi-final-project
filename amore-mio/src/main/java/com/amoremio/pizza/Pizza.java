@@ -15,6 +15,8 @@ public class Pizza {
   private List<Ingredient> ingredients;
   @Setter
   private DoughStyle doughStyle;
+  @Setter
+  private PizzaState pizzaState;
 
   public Pizza (PizzaType pizzaType) {
     this.pizzaType = pizzaType;
