@@ -2,9 +2,9 @@ package com.amoremio.pizza;
 
 import lombok.Getter;
 
-public abstract class AbstractPizzaBuilder {
+public abstract class AbstractPizzaBuilder implements PizzaBuilder {
   @Getter
-  private Pizza pizza;
+  protected Pizza pizza;
   private final PizzaType pizzaType;
 
   public AbstractPizzaBuilder(PizzaType pizzaType) {

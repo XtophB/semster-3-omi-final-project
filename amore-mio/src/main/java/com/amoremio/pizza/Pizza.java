@@ -17,5 +17,9 @@ public class Pizza {
     this.price = 0;
   }
 
+  public void addIngredient(Ingredient ingredient) {
+    ingredients.add(ingredient);
+    price += ingredient.getPrice();
+  }
   
 }
