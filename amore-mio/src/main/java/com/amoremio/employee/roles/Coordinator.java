@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-
 public class Coordinator extends Employee {
   private final EnumMap<IngredientName, Integer> orderRequirements;
   public Coordinator(int basePay, float payMultiplier) {
@@ -24,13 +23,15 @@ public class Coordinator extends Employee {
     calculateRequiredToppings(order);
     checkStorage(storage);
   }
+  
   private void calculateRequiredToppings(Order order) {
     orderRequirements.clear();
     List<OrderedPizza> orderedPizzas = order.getPizzaOrder();
     for (OrderedPizza orderedPizza : orderedPizzas) {
       List<Ingredient> toppings = orderedPizza.getToppings();
       for (Ingredient topping : toppings) {
-        orderRequirements.put(topping.getName(), orderRequirements.get(topping.getName()) + 1);
+        int currentAmount = orderRequirements.getOrDefault(topping.getName(),0);
+        orderRequirements.put(topping.getName(), currentAmount + 1);
       }
     }
   }
