@@ -37,7 +37,8 @@ public class Storage {
     System.out.println("Restocked " + orderQuantity + " units of " + name + " from supplier.");
   }
 
-  public boolean quantityCheck(IngredientName name) {
+  public boolean checkQuantitySufficient(IngredientName name) {
+    checkExpiry(name);
     if (inventory.get(name).size() < TARGET_STOCK) {
       return false;
     }
@@ -45,11 +46,13 @@ public class Storage {
   }
 
   public Ingredient consumeIngredient(IngredientName name) {
+    checkExpiry(name);
     if (inventory.get(name).isEmpty()) {
       throw new IllegalStateException("Not enough " + name + " in storage. Please restock.");
     }
     return inventory.get(name).removeFirst();
   }
+
   private void checkExpiry(IngredientName name) {
     List<Ingredient> currentIngredient = inventory.get(name);
     ListIterator<Ingredient> iterator = currentIngredient.listIterator();

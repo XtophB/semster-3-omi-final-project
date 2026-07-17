@@ -5,6 +5,7 @@ import com.amoremio.ingredients.Ingredient;
 import com.amoremio.ingredients.IngredientName;
 import com.amoremio.order.Order;
 import com.amoremio.order.OrderProcess;
+import com.amoremio.order.OrderState;
 import com.amoremio.order.OrderedPizza;
 import com.amoremio.store.Storage;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 
 public class Coordinator extends Employee {
   private final EnumMap<IngredientName, Integer> orderRequirements;
+
   public Coordinator(int basePay, float payMultiplier) {
     super(basePay, payMultiplier);
     this.orderRequirements = new EnumMap<>(IngredientName.class);
@@ -21,31 +23,35 @@ public class Coordinator extends Employee {
   public void checkOrder(Storage storage, OrderProcess orderProcess) {
     Order order = orderProcess.getOrder();
     calculateRequiredToppings(order);
-    checkStorage(storage);
+    if (!checkStorage(storage)) {
+      orderProcess.setState(OrderState.DELAYED);
+    }
   }
-  
+
   private void calculateRequiredToppings(Order order) {
     orderRequirements.clear();
     List<OrderedPizza> orderedPizzas = order.getPizzaOrder();
     for (OrderedPizza orderedPizza : orderedPizzas) {
       List<Ingredient> toppings = orderedPizza.getToppings();
       for (Ingredient topping : toppings) {
-        int currentAmount = orderRequirements.getOrDefault(topping.getName(),0);
+        int currentAmount = orderRequirements.getOrDefault(topping.getName(), 0);
         orderRequirements.put(topping.getName(), currentAmount + 1);
       }
     }
   }
 
-  private void checkStorage(Storage storage) {
+  private boolean checkStorage(Storage storage) {
     EnumMap<IngredientName, ArrayList<Ingredient>> inventory = storage.getInventory();
     for (IngredientName name : orderRequirements.keySet()) {
       System.out.println("Ingredient: " + name + ", Required: " + orderRequirements.get(name));
       System.out.println("Ingredient: " + name + ", In Storage: " + inventory.get(name).size());
-      if (inventory.get(name).size() < orderRequirements.get(name)) {
+      if (!storage.checkQuantitySufficient(name)) {
         System.out.println("Not enough ingredients");
         System.out.println("Calling supplier for " + name);
         storage.callSupplier(name);
+        return false;
       }
     }
+    return true;
   }
 }
