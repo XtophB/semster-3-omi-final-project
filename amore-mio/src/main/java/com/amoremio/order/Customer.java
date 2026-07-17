@@ -9,7 +9,7 @@ public class Customer implements Subscriber {
   public void update(OrderProcess process) {
     System.out.println("Customer " + name + " received update for order: " + process.getState());
     if (process.getState() == OrderState.DELAYED) {
-      System.out.println("Customer " + name + "'s pizza was burnt, ordering delayed.");
+      System.out.println("Customer " + name + "'s order is being delayed.");
     }
   }
 }
