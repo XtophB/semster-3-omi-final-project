@@ -37,4 +37,19 @@ public class KitchenAid extends Employee {
     }
     return preparedPizzas;
   }
+
+  public Pizza redoPizza(Pizza burntPizza, Storage storage, AbstractPizzaBuilder pizzaBuilder) {
+    pizzaBuilder.createPizza();
+
+    Dough dough = (Dough) storage.consumeIngredient(IngredientName.DOUGH);
+    Sauce sauce = (Sauce) storage.consumeIngredient(IngredientName.SAUCE);
+
+    pizzaBuilder.buildDough(dough);
+    pizzaBuilder.buildSauce(sauce);
+
+    List<Ingredient> toppings = burntPizza.getIngredients();
+    pizzaBuilder.buildToppings(toppings);
+
+    return pizzaBuilder.getPizza();
+  }
 }

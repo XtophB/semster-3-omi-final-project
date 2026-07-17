@@ -120,6 +120,9 @@ public class Branch {
       Pizza bakedPizza = cook.bakePizza(pizza);
       if (bakedPizza.getPizzaState() ==  PizzaState.BURNT) {
         iterator.add(bakedPizza);
+      if (bakedPizza.getPizzaState() == PizzaState.BURNT) {
+        Pizza burntPizza = aid.redoPizza(bakedPizza, storage, pizzaBuilder);
+        iterator.add(burntPizza);
         System.out.println("Pizza burnt, re-adding to raw pizzas for re-baking.");
         orderProcess.setState(OrderState.DELAYED);
       } else {
