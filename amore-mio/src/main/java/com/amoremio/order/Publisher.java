@@ -1,3 +1,6 @@
 package com.amoremio.order;
 
-public interface Publisher {}
+public interface Publisher {
+  void addSubscriber(Subscriber subscriber);
+  void notifySubscribers();
+}

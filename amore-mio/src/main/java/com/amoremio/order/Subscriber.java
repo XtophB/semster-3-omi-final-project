@@ -1,3 +1,5 @@
 package com.amoremio.order;
 
-public interface Subscriber {}
+public interface Subscriber {
+  void update(OrderProcess process);
+}
