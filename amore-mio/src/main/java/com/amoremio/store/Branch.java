@@ -2,6 +2,7 @@ package com.amoremio.store;
 
 import com.amoremio.employee.Employee;
 import com.amoremio.employee.roles.Cook;
+import com.amoremio.employee.roles.DeliveryBoy;
 import com.amoremio.employee.roles.KitchenAid;
 import com.amoremio.pizza.Pizza;
 import com.amoremio.pizza.builders.AbstractPizzaBuilder;
@@ -76,15 +77,31 @@ public class Branch {
   }
 
   public void processOrder(Order order) {
+  private DeliveryBoy findFreeDeliveryBoy(){
+    for (Employee employee : employees) {
+      if (employee instanceof DeliveryBoy) {
+        return (DeliveryBoy) employee;
+      }
+    }
+    throw new IllegalStateException("No DeliveryBoy available.");
+  }
     KitchenAid aid = findFreeKitchenAid();
     Cook cook = findFreeCook();
 
     List<Pizza> rawPizzas = aid.preparePizza(storage, pizzaBuilder, order);
     this.rawPizzas.addAll(rawPizzas);
+    System.out.println("All pizzas baked for an order.");
+    orderProcess.setState(OrderState.DELIVERING);
+    System.out.println("Order is ready for delivery.");
+    deliverOrder(orderProcess);
+    System.out.println("Order delivered successfully.");
 
     Pizza bakedPizza = cook.bakePizza(rawPizzas.getFirst());
     this.bakedPizzas.add(bakedPizza);
 
+  private void deliverOrder(OrderProcess orderProcess) {
+    DeliveryBoy deliveryBoy = findFreeDeliveryBoy();
+    deliveryBoy.deliverOrder(orderProcess);
   }
 
 
