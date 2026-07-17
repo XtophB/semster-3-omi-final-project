@@ -5,9 +5,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 public class Order {
-  @Getter
-  @Setter
   List<OrderedPizza> pizzaOrder;
   PaymentType paymentType;
   City city;
