@@ -2,13 +2,18 @@ package com.amoremio.store;
 
 import com.amoremio.employee.Employee;
 import com.amoremio.employee.roles.Cook;
+import com.amoremio.employee.roles.Coordinator;
 import com.amoremio.employee.roles.DeliveryBoy;
 import com.amoremio.employee.roles.KitchenAid;
+import com.amoremio.order.OrderProcess;
+import com.amoremio.order.OrderState;
 import com.amoremio.pizza.Pizza;
+import com.amoremio.pizza.PizzaState;
 import com.amoremio.pizza.builders.AbstractPizzaBuilder;
 import com.amoremio.order.Order;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import lombok.Setter;
 
 public class Branch {
@@ -18,6 +23,7 @@ public class Branch {
   AbstractPizzaBuilder pizzaBuilder;
   City city;
 
+  private final List<OrderProcess> orderProcesses = new ArrayList<>();
   private final List<Pizza> rawPizzas = new ArrayList<Pizza>();
   private final List<Pizza> bakedPizzas = new ArrayList<Pizza>();
 
@@ -58,6 +64,15 @@ public class Branch {
     return bakedPizzas.removeFirst();
   }
 
+  private Coordinator findFreeCoordinator(){
+    for (Employee employee : employees) {
+      if (employee instanceof Coordinator) {
+        return (Coordinator) employee;
+      }
+    }
+    throw new IllegalStateException("No Coordinator available.");
+  }
+
   private KitchenAid findFreeKitchenAid(){
     for (Employee employee : employees) {
       if (employee instanceof KitchenAid) {
@@ -76,7 +91,6 @@ public class Branch {
     throw new IllegalStateException("No Cook available.");
   }
 
-  public void processOrder(Order order) {
   private DeliveryBoy findFreeDeliveryBoy(){
     for (Employee employee : employees) {
       if (employee instanceof DeliveryBoy) {
@@ -85,16 +99,28 @@ public class Branch {
     }
     throw new IllegalStateException("No DeliveryBoy available.");
   }
+
+  public void processOrder(OrderProcess orderProcess) {
+    orderProcesses.add(orderProcess);
+    Order order = orderProcess.getOrder();
+    Coordinator coordinator = findFreeCoordinator();
     KitchenAid aid = findFreeKitchenAid();
     Cook cook = findFreeCook();
 
+    coordinator.checkOrder(storage, orderProcess);
     List<Pizza> rawPizzas = aid.preparePizza(storage, pizzaBuilder, order);
     this.rawPizzas.addAll(rawPizzas);
+    // use iterator for modification while iterating to avoid ConcurrentModificationException
+    ListIterator<Pizza> iterator = rawPizzas.listIterator();
+    System.out.println("Prepared all raw pizzas for an order.");
+    orderProcess.setState(OrderState.PROCESSING);
+
     System.out.println("All pizzas baked for an order.");
     orderProcess.setState(OrderState.DELIVERING);
     System.out.println("Order is ready for delivery.");
     deliverOrder(orderProcess);
     System.out.println("Order delivered successfully.");
+  }
 
     Pizza bakedPizza = cook.bakePizza(rawPizzas.getFirst());
     this.bakedPizzas.add(bakedPizza);
@@ -103,6 +129,5 @@ public class Branch {
     DeliveryBoy deliveryBoy = findFreeDeliveryBoy();
     deliveryBoy.deliverOrder(orderProcess);
   }
-
 
 }
