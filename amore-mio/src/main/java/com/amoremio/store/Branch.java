@@ -108,8 +108,8 @@ public class Branch {
     Cook cook = findFreeCook();
 
     coordinator.checkOrder(storage, orderProcess);
-    List<Pizza> rawPizzas = aid.preparePizza(storage, pizzaBuilder, order);
-    this.rawPizzas.addAll(rawPizzas);
+    List<Pizza> preparedPizzas = aid.preparePizza(storage, pizzaBuilder, order);
+    this.rawPizzas.addAll(preparedPizzas);
     // use iterator for modification while iterating to avoid ConcurrentModificationException
     ListIterator<Pizza> iterator = rawPizzas.listIterator();
     System.out.println("Prepared all raw pizzas for an order.");
