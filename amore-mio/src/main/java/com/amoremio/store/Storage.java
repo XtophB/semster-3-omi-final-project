@@ -5,11 +5,13 @@ import com.amoremio.ingredients.IngredientName;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import lombok.Getter;
 
 public class Storage {
+  @Getter
   private final EnumMap<IngredientName, ArrayList<Ingredient>> inventory;
   private final Supplier supplier;
-  private static final int TARGET_STOCK = 10;
+  private static final int TARGET_STOCK = 100;
   private static final int EXPIRY_OFFSET = 7;
 
   public Storage(Supplier supplier) {
@@ -17,7 +19,7 @@ public class Storage {
     this.supplier = supplier;
 
     for (IngredientName name : IngredientName.values()) {
-      inventory.put(name, new ArrayList<Ingredient>());
+      inventory.put(name, new ArrayList<>());
     }
   }
 
@@ -27,9 +29,14 @@ public class Storage {
     }
   }
 
-  public boolean quantityCheck(Ingredient name) {
+  public void callSupplier(IngredientName name){
+    int orderQuantity = TARGET_STOCK - inventory.get(name).size();
+    supplier.deliverIngredients(this, name, orderQuantity, EXPIRY_OFFSET);
+    System.out.println("Restocked " + orderQuantity + " units of " + name + " from supplier.");
+  }
+
+  public boolean quantityCheck(IngredientName name) {
     if (inventory.get(name).size() < TARGET_STOCK) {
-      //supplier.deliverIngredients(this, name, TARGET_STOCK, EXPIRY_OFFSET);
       return false;
     }
     return true;
