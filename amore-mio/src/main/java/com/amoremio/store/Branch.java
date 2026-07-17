@@ -11,91 +11,83 @@ import com.amoremio.pizza.Pizza;
 import com.amoremio.pizza.PizzaState;
 import com.amoremio.pizza.builders.AbstractPizzaBuilder;
 import com.amoremio.order.Order;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Queue;
 import lombok.Setter;
 
 public class Branch {
-  List<Employee> employees;
   Storage storage;
-  @Setter
-  AbstractPizzaBuilder pizzaBuilder;
+  @Setter AbstractPizzaBuilder pizzaBuilder;
   City city;
 
   private final List<OrderProcess> orderProcesses = new ArrayList<>();
-  private final List<Pizza> rawPizzas = new ArrayList<Pizza>();
-  private final List<Pizza> bakedPizzas = new ArrayList<Pizza>();
+  private final List<Pizza> rawPizzas = new ArrayList<>();
+  private final List<Pizza> bakedPizzas = new ArrayList<>();
+
+  private final List<Cook> freeCooks = new ArrayList<>();
+  private final List<Cook> busyCooks = new ArrayList<>();
+  private final List<DeliveryBoy> freeDeliveryBoys = new ArrayList<>();
+  private final List<DeliveryBoy> busyDeliveryBoys = new ArrayList<>();
+  private final List<KitchenAid> freeKitchenAids = new ArrayList<>();
+  private final List<KitchenAid> busyKitchenAids = new ArrayList<>();
+  private final List<Coordinator> freeCoordinators = new ArrayList<>();
+  private final List<Coordinator> busyCoordinators = new ArrayList<>();
+
+  private final Queue<OrderProcess> orderQueue = new ArrayDeque<>();
 
   Branch(Storage storage, AbstractPizzaBuilder builder, City city) {
     this.storage = storage;
     this.pizzaBuilder = builder;
     this.city = city;
-    this.employees = new ArrayList<>();
   }
 
   public void addEmployee(Employee employee) {
-    employees.add(employee);
+    switch (employee) {
+      case Cook cook -> freeCooks.add(cook);
+      case DeliveryBoy deliveryBoy -> freeDeliveryBoys.add(deliveryBoy);
+      case KitchenAid kitchenAid -> freeKitchenAids.add(kitchenAid);
+      case Coordinator coordinator -> freeCoordinators.add(coordinator);
+      default -> {}
+    }
   }
 
   public void removeEmployee(Employee employee) {
-    employees.remove(employee);
-  }
-
-  public void addRawPizza(Pizza pizza) {
-    rawPizzas.add(pizza);
-  }
-
-  public void addBakedPizza(Pizza pizza) {
-    bakedPizzas.add(pizza);
-  }
-
-  public Pizza takeRawPizza() {
-    if (rawPizzas.isEmpty()) {
-      throw new IllegalStateException("No raw pizzas available.");
+    switch (employee) {
+      case Cook cook -> freeCooks.remove(cook);
+      case DeliveryBoy deliveryBoy -> freeDeliveryBoys.remove(deliveryBoy);
+      case KitchenAid kitchenAid -> freeKitchenAids.remove(kitchenAid);
+      case Coordinator coordinator -> freeCoordinators.remove(coordinator);
+      default -> {}
     }
-    return rawPizzas.removeFirst();
   }
 
-  public Pizza takeBakedPizza() {
-    if (bakedPizzas.isEmpty()) {
-      throw new IllegalStateException("No baked pizzas available.");
-    }
-    return bakedPizzas.removeFirst();
-  }
-
-  private Coordinator findFreeCoordinator(){
-    for (Employee employee : employees) {
-      if (employee instanceof Coordinator) {
-        return (Coordinator) employee;
-      }
+  private Coordinator findFreeCoordinator() {
+    for (Coordinator coordinator : freeCoordinators) {
+      return coordinator;
     }
     throw new IllegalStateException("No Coordinator available.");
   }
 
-  private KitchenAid findFreeKitchenAid(){
-    for (Employee employee : employees) {
-      if (employee instanceof KitchenAid) {
-        return (KitchenAid) employee;
-      }
+  private KitchenAid findFreeKitchenAid() {
+    for (KitchenAid kitchenAid : freeKitchenAids) {
+      return kitchenAid;
     }
     throw new IllegalStateException("No KitchenAid available.");
   }
 
-  private Cook findFreeCook(){
-    for (Employee employee : employees) {
-      if (employee instanceof Cook) {
-        return (Cook) employee;
-      }
+  private Cook findFreeCook() {
+    for (Cook cook : freeCooks) {
+      return cook;
     }
     throw new IllegalStateException("No Cook available.");
   }
 
-  private DeliveryBoy findFreeDeliveryBoy(){
-    for (Employee employee : employees) {
-      if (employee instanceof DeliveryBoy) {
-        return (DeliveryBoy) employee;
-      }
+  private DeliveryBoy findFreeDeliveryBoy() {
+    for (DeliveryBoy deliveryBoy : freeDeliveryBoys) {
+      return deliveryBoy;
     }
     throw new IllegalStateException("No DeliveryBoy available.");
   }
@@ -118,8 +110,6 @@ public class Branch {
     while (iterator.hasNext()) {
       Pizza pizza = iterator.next();
       Pizza bakedPizza = cook.bakePizza(pizza);
-      if (bakedPizza.getPizzaState() ==  PizzaState.BURNT) {
-        iterator.add(bakedPizza);
       if (bakedPizza.getPizzaState() == PizzaState.BURNT) {
         Pizza burntPizza = aid.redoPizza(bakedPizza, storage, pizzaBuilder);
         iterator.add(burntPizza);
@@ -136,10 +126,8 @@ public class Branch {
     System.out.println("Order delivered successfully.");
   }
 
-
   private void deliverOrder(OrderProcess orderProcess) {
     DeliveryBoy deliveryBoy = findFreeDeliveryBoy();
     deliveryBoy.deliverOrder(orderProcess);
   }
-
 }
