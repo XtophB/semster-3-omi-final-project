@@ -2,9 +2,11 @@ package com.amoremio.store;
 
 import com.amoremio.ingredients.Ingredient;
 import com.amoremio.ingredients.IngredientName;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.ListIterator;
 import lombok.Getter;
 
 public class Storage {
@@ -47,5 +49,15 @@ public class Storage {
       throw new IllegalStateException("Not enough " + name + " in storage. Please restock.");
     }
     return inventory.get(name).removeFirst();
+  }
+  private void checkExpiry(IngredientName name) {
+    List<Ingredient> currentIngredient = inventory.get(name);
+    ListIterator<Ingredient> iterator = currentIngredient.listIterator();
+    while(iterator.hasNext()) {
+      Ingredient ingredient = iterator.next();
+      if (ingredient.getExpiryDate().isBefore(LocalDate.now())) {
+        iterator.remove();
+      }
+    }
   }
 }
