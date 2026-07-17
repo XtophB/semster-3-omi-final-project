@@ -1,4 +1,4 @@
-package com.amoremio.store.Order;
+package com.amoremio.order;
 
 public enum PaymentType {
   CASH,

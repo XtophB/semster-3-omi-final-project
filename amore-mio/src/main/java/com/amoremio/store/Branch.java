@@ -5,8 +5,7 @@ import com.amoremio.employee.roles.Cook;
 import com.amoremio.employee.roles.KitchenAid;
 import com.amoremio.pizza.Pizza;
 import com.amoremio.pizza.builders.AbstractPizzaBuilder;
-import com.amoremio.pizza.factories.BuilderFactoryInterface;
-import com.amoremio.store.Order.Order;
+import com.amoremio.order.Order;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Setter;
@@ -80,7 +79,7 @@ public class Branch {
     KitchenAid aid = findFreeKitchenAid();
     Cook cook = findFreeCook();
 
-    List<Pizza> rawPizzas = aid.preparePizza(storage, builderFactory, order);
+    List<Pizza> rawPizzas = aid.preparePizza(storage, pizzaBuilder, order);
     this.rawPizzas.addAll(rawPizzas);
 
     Pizza bakedPizza = cook.bakePizza(rawPizzas.getFirst());

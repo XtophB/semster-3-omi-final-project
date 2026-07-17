@@ -1,4 +1,4 @@
-package com.amoremio.store.Order;
+package com.amoremio.order;
 
 import com.amoremio.ingredients.Ingredient;
 import java.util.List;
