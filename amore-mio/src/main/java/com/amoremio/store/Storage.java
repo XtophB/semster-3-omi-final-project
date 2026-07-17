@@ -43,7 +43,7 @@ public class Storage {
   }
 
   public Ingredient consumeIngredient(IngredientName name) {
-    if (inventory.get(name).size() < TARGET_STOCK) {
+    if (inventory.get(name).isEmpty()) {
       throw new IllegalStateException("Not enough " + name + " in storage. Please restock.");
     }
     return inventory.get(name).removeFirst();
