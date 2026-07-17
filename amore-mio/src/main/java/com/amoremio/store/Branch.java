@@ -115,6 +115,17 @@ public class Branch {
     System.out.println("Prepared all raw pizzas for an order.");
     orderProcess.setState(OrderState.PROCESSING);
 
+    while (iterator.hasNext()) {
+      Pizza pizza = iterator.next();
+      Pizza bakedPizza = cook.bakePizza(pizza);
+      if (bakedPizza.getPizzaState() ==  PizzaState.BURNT) {
+        iterator.add(bakedPizza);
+        System.out.println("Pizza burnt, re-adding to raw pizzas for re-baking.");
+        orderProcess.setState(OrderState.DELAYED);
+      } else {
+        this.bakedPizzas.add(bakedPizza);
+      }
+    }
     System.out.println("All pizzas baked for an order.");
     orderProcess.setState(OrderState.DELIVERING);
     System.out.println("Order is ready for delivery.");
@@ -122,8 +133,6 @@ public class Branch {
     System.out.println("Order delivered successfully.");
   }
 
-    Pizza bakedPizza = cook.bakePizza(rawPizzas.getFirst());
-    this.bakedPizzas.add(bakedPizza);
 
   private void deliverOrder(OrderProcess orderProcess) {
     DeliveryBoy deliveryBoy = findFreeDeliveryBoy();
