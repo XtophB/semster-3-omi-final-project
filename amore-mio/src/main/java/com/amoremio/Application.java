@@ -1,16 +1,92 @@
 package com.amoremio;
 
-import com.amoremio.employee.Cook;
+import com.amoremio.employee.EmployeeFactory;
+import com.amoremio.employee.EmployeeManagerSingleton;
+import com.amoremio.employee.Position;
+import com.amoremio.ingredients.IngredientFactory;
+import com.amoremio.ingredients.IngredientName;
+import com.amoremio.order.Customer;
+import com.amoremio.order.Order;
+import com.amoremio.order.OrderManagerSingleton;
+import com.amoremio.order.OrderedPizza;
+import com.amoremio.order.PaymentType;
+import com.amoremio.pizza.builders.AbstractPizzaBuilder;
+import com.amoremio.pizza.builders.NeapolitanBuilder;
+import com.amoremio.store.Branch;
+import com.amoremio.store.City;
+import com.amoremio.store.Storage;
+import com.amoremio.store.Supplier;
+import java.util.List;
 
 public class Application {
+
   public static void main(String[] args) {
-    final int basePay = 100;
-    final float payMultiplier = 1.5f;
+    // Dependency injections to allow easy mocking
+    IngredientFactory ingredientFactory = new IngredientFactory();
+    Supplier supplier = new Supplier(ingredientFactory);
+    Storage storage = new Storage(supplier);
 
-    Cook cook = new Cook(basePay, payMultiplier);
-    cook.setBasePay(basePay);
+    for (IngredientName name : IngredientName.values()) {
+      supplier.deliverIngredients(storage, name, 200, 7);
+    }
+    System.out.println("Storage stocked with all ingredients.");
+    System.out.println();
+
+    // Customizable pizza builder injections
+    AbstractPizzaBuilder pizzaBuilder = new NeapolitanBuilder();
+    Branch villachBranch = new Branch(storage, pizzaBuilder, City.VILLACH);
+
+    // Singleton and factory for employees
+    EmployeeFactory employeeFactory = new EmployeeFactory();
+    EmployeeManagerSingleton empManager = EmployeeManagerSingleton.getInstance();
+
+    empManager.hireEmployee(villachBranch, Position.COORDINATOR, employeeFactory);
+    empManager.hireEmployee(villachBranch, Position.KITCHEN_AID, employeeFactory);
+    empManager.hireEmployee(villachBranch, Position.COOK, employeeFactory); // Cook 1
+    empManager.hireEmployee(villachBranch, Position.COOK, employeeFactory); // Cook 2
+    empManager.hireEmployee(villachBranch, Position.DELIVERY_BOY, employeeFactory);
+    System.out.println("Hired 1 coordinator, 1 kitchen aid, 2 cooks, 1 delivery boy.");
+    System.out.println("Note, we can only process as many pizzas per order as we have cooks.");
+    System.out.println();
+
+    // Order manager singleton routes orders to correct branches
+    OrderManagerSingleton.getInstance().addBranch(City.VILLACH, villachBranch);
 
 
+    Customer alice = new Customer("PersonOne");
+    Customer bob = new Customer("PersonTwo");
 
+    System.out.println("PersonOne places an order with 2 pizzas");
+    List<OrderedPizza> personOnePizzas = List.of(
+        new OrderedPizza(List.of(
+            IngredientName.MOZZARELLA,
+            IngredientName.SALAMI
+        )),
+        new OrderedPizza(List.of(
+            IngredientName.MOZZARELLA,
+            IngredientName.MUSHROOM,
+            IngredientName.ONION
+        ))
+    );
+    Order personOneOrder = new Order(personOnePizzas, PaymentType.CARD, City.VILLACH);
+    OrderManagerSingleton.getInstance().placeOrder(personOneOrder, alice);
+    System.out.println();
+
+
+    System.out.println("PersonTwo places an order with 1 pizza");
+    List<OrderedPizza> bobPizzas = List.of(
+        new OrderedPizza(List.of(
+            IngredientName.MOZZARELLA,
+            IngredientName.COTTO,
+            IngredientName.PARMESAN
+        ))
+    );
+    Order bobOrder = new Order(bobPizzas, PaymentType.CASH, City.VILLACH);
+    OrderManagerSingleton.getInstance().placeOrder(bobOrder, bob);
+    System.out.println();
+
+    System.out.println("Paying employees.");
+    empManager.payEmployees();
+    System.out.println("All employees have been paid.");
   }
 }
