@@ -31,6 +31,8 @@ public final class EmployeeManagerSingleton {
   public void payEmployees() {
     for (Employee employee : globalEmployees) {
       employee.getPaid();
+      employee.getBalance();
+      System.out.println(employee.getClass().getSimpleName() + " paid. Current balance: " + employee.getBalance());
     }
   }
 }
