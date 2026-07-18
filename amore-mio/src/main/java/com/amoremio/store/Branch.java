@@ -24,7 +24,6 @@ public class Branch {
   City city;
 
   private final List<OrderProcess> orderProcesses = new ArrayList<>();
-  private final List<Pizza> rawPizzas = new ArrayList<>();
   private final List<Pizza> bakedPizzas = new ArrayList<>();
 
   private final List<Cook> freeCooks = new ArrayList<>();
@@ -112,13 +111,15 @@ public class Branch {
 
     coordinator.checkOrder(storage, orderProcess);
     List<Pizza> preparedPizzas = aid.preparePizza(storage, pizzaBuilder, order);
-    this.rawPizzas.addAll(preparedPizzas);
+    // use a local list so pizzas from previous orders are not re-processed
+    List<Pizza> pizzasToBake = new ArrayList<>(preparedPizzas);
     // use iterator for modification while iterating to avoid ConcurrentModificationException
-    ListIterator<Pizza> iterator = rawPizzas.listIterator();
-    System.out.println("Prepared all raw pizzas for an order.");
+    ListIterator<Pizza> iterator = pizzasToBake.listIterator();
+    System.out.println("Prepared " + preparedPizzas.size() + " raw pizzas for this order.");
     orderProcess.setState(OrderState.PROCESSING);
 
     List<Cook> assignedCooks = new ArrayList<>();
+    float orderTotal = 0;
 
     while (iterator.hasNext()) {
       Pizza pizza = iterator.next();
@@ -130,10 +131,13 @@ public class Branch {
       if (bakedPizza.getPizzaState() == PizzaState.BURNT) {
         Pizza burntPizza = aid.redoPizza(bakedPizza, storage, pizzaBuilder);
         iterator.add(burntPizza);
-        System.out.println("Pizza burnt, re-adding to raw pizzas for re-baking.");
+        System.out.println("  Pizza burnt, re-adding for re-baking.");
         orderProcess.setState(OrderState.DELAYED);
       } else {
         this.bakedPizzas.add(bakedPizza);
+        orderTotal += bakedPizza.getPrice();
+        System.out.println("  Baked " + bakedPizza.getPizzaType()
+            + " pizza - EUR " + String.format("%.2f", bakedPizza.getPrice()));
       }
     }
 
@@ -141,7 +145,7 @@ public class Branch {
       markCookFree(cook);
     }
 
-    System.out.println("All pizzas baked for an order.");
+    System.out.println("All pizzas baked. Order total: EUR " + String.format("%.2f", orderTotal));
     orderProcess.setState(OrderState.DELIVERING);
     System.out.println("Order is ready for delivery.");
     deliverOrder(orderProcess);
