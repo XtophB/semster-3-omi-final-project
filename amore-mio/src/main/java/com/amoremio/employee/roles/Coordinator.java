@@ -32,10 +32,10 @@ public class Coordinator extends Employee {
     orderRequirements.clear();
     List<OrderedPizza> orderedPizzas = order.getPizzaOrder();
     for (OrderedPizza orderedPizza : orderedPizzas) {
-      List<Ingredient> toppings = orderedPizza.getToppings();
-      for (Ingredient topping : toppings) {
-        int currentAmount = orderRequirements.getOrDefault(topping.getName(), 0);
-        orderRequirements.put(topping.getName(), currentAmount + 1);
+      List<IngredientName> toppings = orderedPizza.getToppings();
+      for (IngredientName topping : toppings) {
+        int currentAmount = orderRequirements.getOrDefault(topping, 0);
+        orderRequirements.put(topping, currentAmount + 1);
       }
     }
   }
