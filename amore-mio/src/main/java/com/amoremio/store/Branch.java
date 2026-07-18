@@ -5,37 +5,47 @@ import com.amoremio.employee.roles.Cook;
 import com.amoremio.employee.roles.Coordinator;
 import com.amoremio.employee.roles.DeliveryBoy;
 import com.amoremio.employee.roles.KitchenAid;
+import com.amoremio.order.Order;
 import com.amoremio.order.OrderProcess;
 import com.amoremio.order.OrderState;
 import com.amoremio.pizza.Pizza;
 import com.amoremio.pizza.PizzaState;
 import com.amoremio.pizza.builders.AbstractPizzaBuilder;
-import com.amoremio.order.Order;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Queue;
 import lombok.Setter;
 
+/** Represents a physical store in a specific city. */
 public class Branch {
-  Storage storage;
-  @Setter AbstractPizzaBuilder pizzaBuilder;
-  City city;
-
   private final List<OrderProcess> orderProcesses = new ArrayList<>();
   private final List<Cook> freeCooks = new ArrayList<>();
   private final List<Cook> busyCooks = new ArrayList<>();
   private final List<DeliveryBoy> freeDeliveryBoys = new ArrayList<>();
   private final List<KitchenAid> freeKitchenAids = new ArrayList<>();
   private final List<Coordinator> freeCoordinators = new ArrayList<>();
+  Storage storage;
+  @Setter AbstractPizzaBuilder pizzaBuilder;
+  City city;
 
+  /**
+   * Constructor for a branch receiving dependency injections.
+   *
+   * @param storage the storage associated with a branch
+   * @param builder the builder that defines what pizzas a branch can make
+   * @param city the city where the branch is located in
+   */
   public Branch(Storage storage, AbstractPizzaBuilder builder, City city) {
     this.storage = storage;
     this.pizzaBuilder = builder;
     this.city = city;
   }
 
+  /**
+   * A method exposing the ability to add employees to a branch.
+   *
+   * @param employee the employee to add
+   */
   public void addEmployee(Employee employee) {
     switch (employee) {
       case Cook cook -> freeCooks.add(cook);
@@ -46,6 +56,11 @@ public class Branch {
     }
   }
 
+  /**
+   * A method exposing the ability to remove employees from a branch.
+   *
+   * @param employee the employee to remove
+   */
   public void removeEmployee(Employee employee) {
     switch (employee) {
       case Cook cook -> freeCooks.remove(cook);
@@ -101,6 +116,12 @@ public class Branch {
     throw new IllegalStateException("No DeliveryBoy available.");
   }
 
+  /**
+   * The main method used to process an order. This method acts as a conductor. Here all the steps
+   * of the order process are executed in sequence, from preparation to baking to delivery.
+   *
+   * @param orderProcess the order process to handle
+   */
   public void processOrder(OrderProcess orderProcess) {
     orderProcesses.add(orderProcess);
     Order order = orderProcess.getOrder();
@@ -121,7 +142,8 @@ public class Branch {
     return preparedPizzas;
   }
 
-  private List<Pizza> bakePizzas(List<Pizza> preparedPizzas, KitchenAid aid, OrderProcess orderProcess) {
+  private List<Pizza> bakePizzas(
+      List<Pizza> preparedPizzas, KitchenAid aid, OrderProcess orderProcess) {
     ListIterator<Pizza> iterator = preparedPizzas.listIterator();
     List<Cook> assignedCooks = new ArrayList<>();
     List<Pizza> bakedPizzas = new ArrayList<>();
@@ -140,8 +162,11 @@ public class Branch {
         orderProcess.setState(OrderState.DELAYED);
       } else {
         bakedPizzas.add(bakedPizza);
-        System.out.println("  Baked " + bakedPizza.getPizzaType()
-            + " pizza - EUR " + String.format("%.2f", bakedPizza.getPrice()));
+        System.out.println(
+            "  Baked "
+                + bakedPizza.getPizzaType()
+                + " pizza - EUR "
+                + String.format("%.2f", bakedPizza.getPrice()));
       }
     }
 

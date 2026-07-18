@@ -18,8 +18,14 @@ import com.amoremio.store.Storage;
 import com.amoremio.store.Supplier;
 import java.util.List;
 
+/** A simulation class. */
 public class Application {
 
+  /**
+   * The main method where the simulation happens.
+   *
+   * @param args the arguments if command line arguments are used
+   */
   public static void main(String[] args) {
     // Dependency injections to allow easy mocking
     IngredientFactory ingredientFactory = new IngredientFactory();
@@ -52,37 +58,28 @@ public class Application {
     // Order manager singleton routes orders to correct branches
     OrderManagerSingleton.getInstance().addBranch(City.VILLACH, villachBranch);
 
-
-    Customer alice = new Customer("PersonOne");
-    Customer bob = new Customer("PersonTwo");
+    Customer personOne = new Customer("PersonOne");
 
     System.out.println("PersonOne places an order with 2 pizzas");
-    List<OrderedPizza> personOnePizzas = List.of(
-        new OrderedPizza(List.of(
-            IngredientName.MOZZARELLA,
-            IngredientName.SALAMI
-        )),
-        new OrderedPizza(List.of(
-            IngredientName.MOZZARELLA,
-            IngredientName.MUSHROOM,
-            IngredientName.ONION
-        ))
-    );
+    List<OrderedPizza> personOnePizzas =
+        List.of(
+            new OrderedPizza(List.of(IngredientName.MOZZARELLA, IngredientName.SALAMI)),
+            new OrderedPizza(
+                List.of(IngredientName.MOZZARELLA, IngredientName.MUSHROOM, IngredientName.ONION)));
     Order personOneOrder = new Order(personOnePizzas, PaymentType.CARD, City.VILLACH);
-    OrderManagerSingleton.getInstance().placeOrder(personOneOrder, alice);
+    OrderManagerSingleton.getInstance().placeOrder(personOneOrder, personOne);
     System.out.println();
 
 
+    Customer personTwo = new Customer("PersonTwo");
+
     System.out.println("PersonTwo places an order with 1 pizza");
-    List<OrderedPizza> bobPizzas = List.of(
-        new OrderedPizza(List.of(
-            IngredientName.MOZZARELLA,
-            IngredientName.COTTO,
-            IngredientName.PARMESAN
-        ))
-    );
+    List<OrderedPizza> bobPizzas =
+        List.of(
+            new OrderedPizza(
+                List.of(IngredientName.MOZZARELLA, IngredientName.COTTO, IngredientName.PARMESAN)));
     Order bobOrder = new Order(bobPizzas, PaymentType.CASH, City.VILLACH);
-    OrderManagerSingleton.getInstance().placeOrder(bobOrder, bob);
+    OrderManagerSingleton.getInstance().placeOrder(bobOrder, personTwo);
     System.out.println();
 
     System.out.println("Paying employees.");

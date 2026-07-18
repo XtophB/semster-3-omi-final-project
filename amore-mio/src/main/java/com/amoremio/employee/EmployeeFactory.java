@@ -5,6 +5,10 @@ import com.amoremio.employee.roles.Coordinator;
 import com.amoremio.employee.roles.DeliveryBoy;
 import com.amoremio.employee.roles.KitchenAid;
 
+/**
+ * Implementation of a factory pattern, to create all types of employees. This class acts as a
+ * central location to define all employee pay attributes and we create the employees from here.
+ */
 public class EmployeeFactory {
 
   private static final int COOK_PAY = 12;
@@ -20,6 +24,12 @@ public class EmployeeFactory {
   private static final int KITCHEN_AID_PAY = 10;
   private static final float KITCHEN_AID_MULTIPLIER = 1.1f;
 
+  /**
+   * Creates an employee based on the position passed in.
+   *
+   * @param position the role the employee should take on
+   * @return the employee object with the specified role
+   */
   public Employee create(Position position) {
     return switch (position) {
       case COOK -> new Cook(COOK_PAY, COOK_MULTIPLIER);

@@ -5,19 +5,37 @@ import com.amoremio.ingredients.Dough;
 import com.amoremio.ingredients.Ingredient;
 import com.amoremio.ingredients.IngredientName;
 import com.amoremio.ingredients.Sauce;
-import com.amoremio.pizza.Pizza;
-import com.amoremio.pizza.builders.AbstractPizzaBuilder;
 import com.amoremio.order.Order;
 import com.amoremio.order.OrderedPizza;
+import com.amoremio.pizza.Pizza;
+import com.amoremio.pizza.builders.AbstractPizzaBuilder;
 import com.amoremio.store.Storage;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents the kitchen aid in a restaurant, sole job is to prepare pizzas.
+ */
 public class KitchenAid extends Employee {
+
+  /**
+   * Constructor for the kitchen aid.
+   *
+   * @param basePay daily base pay
+   * @param payMultiplier multiplier based on employee importance
+   */
   public KitchenAid(int basePay, float payMultiplier) {
     super(basePay, payMultiplier);
   }
 
+  /**
+   * Method to prepare a pizza in a specific style based on injected builder pattern.
+   *
+   * @param storage the storage to pull ingredients from
+   * @param pizzaBuilder the builder used to create a pizza in a specific style
+   * @param order the order containing the pizzas to be created
+   * @return a list of pizzas that have been prepared
+   */
   public List<Pizza> preparePizza(Storage storage, AbstractPizzaBuilder pizzaBuilder, Order order) {
     List<OrderedPizza> orderedPizzas = order.getPizzaOrder();
     List<Pizza> preparedPizzas = new ArrayList<>();
@@ -43,6 +61,14 @@ public class KitchenAid extends Employee {
     return preparedPizzas;
   }
 
+  /**
+   * The method to redo a burnt pizza.
+   *
+   * @param burntPizza the burnt pizza containing the list of toppings used
+   * @param storage the storage where to pull the new ingredients from
+   * @param pizzaBuilder the same pizza builder used to create the original pizza
+   * @return a new raw pizza object
+   */
   public Pizza redoPizza(Pizza burntPizza, Storage storage, AbstractPizzaBuilder pizzaBuilder) {
     pizzaBuilder.createPizza();
 

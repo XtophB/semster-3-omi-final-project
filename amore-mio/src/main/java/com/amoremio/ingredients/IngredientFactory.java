@@ -16,13 +16,14 @@ import com.amoremio.ingredients.misc.Salami;
 
 /**
  * A simple factory implementation. This is the only factory for ingredients, interface is redundant
- * here.
+ * here. The class is only used by the {@link com.amoremio.store.Supplier Supplier} class to create
+ * ingredients based on the request.
  */
 public class IngredientFactory {
 
   /**
    * The factory method creating an ingredient based on the request. This is used by the {@link
-   * com.amoremio.store.Supplier} class.
+   * com.amoremio.store.Supplier Supplier} class.
    *
    * @param name the ingredient name enum
    * @param expiryDayOffset the offset for expiry date from today's date
@@ -44,7 +45,7 @@ public class IngredientFactory {
       case CORN -> new Corn(expiryDayOffset);
       case CHILLI_FLAKE -> new ChilliFlake(expiryDayOffset);
       case DOUGH -> new Dough(expiryDayOffset);
-      case SAUCE ->  new Sauce(expiryDayOffset);
+      case SAUCE -> new Sauce(expiryDayOffset);
     };
   }
 }
