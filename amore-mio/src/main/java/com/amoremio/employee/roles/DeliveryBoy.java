@@ -3,6 +3,8 @@ package com.amoremio.employee.roles;
 import com.amoremio.employee.Employee;
 import com.amoremio.order.OrderProcess;
 import com.amoremio.order.OrderState;
+import com.amoremio.pizza.Pizza;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,8 +27,8 @@ public class DeliveryBoy extends Employee {
     this.deliveredAmount = 0;
   }
 
-  public void deliverOrder(OrderProcess orderProcess) {
-    System.out.println("Delivering order...");
+  public void deliverOrder(OrderProcess orderProcess, List<Pizza> pizzas) {
+    System.out.println("Delivering " + pizzas.size() + " pizza(s)...");
     deliveredAmount++;
     orderProcess.setState(OrderState.DELIVERED);
   }

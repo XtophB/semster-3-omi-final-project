@@ -16,6 +16,4 @@ public class Order {
     this.paymentType = paymentType;
     this.city = city;
   }
-
-
 }
