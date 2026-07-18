@@ -30,15 +30,10 @@ public class Branch {
   private final List<Cook> freeCooks = new ArrayList<>();
   private final List<Cook> busyCooks = new ArrayList<>();
   private final List<DeliveryBoy> freeDeliveryBoys = new ArrayList<>();
-  private final List<DeliveryBoy> busyDeliveryBoys = new ArrayList<>();
   private final List<KitchenAid> freeKitchenAids = new ArrayList<>();
-  private final List<KitchenAid> busyKitchenAids = new ArrayList<>();
   private final List<Coordinator> freeCoordinators = new ArrayList<>();
-  private final List<Coordinator> busyCoordinators = new ArrayList<>();
 
-  private final Queue<OrderProcess> orderQueue = new ArrayDeque<>();
-
-  Branch(Storage storage, AbstractPizzaBuilder builder, City city) {
+  public Branch(Storage storage, AbstractPizzaBuilder builder, City city) {
     this.storage = storage;
     this.pizzaBuilder = builder;
     this.city = city;
@@ -79,10 +74,27 @@ public class Branch {
   }
 
   private Cook findFreeCook() {
-    for (Cook cook : freeCooks) {
+    // if we have a free cook use them
+    if (!freeCooks.isEmpty()) {
+      Cook cook = freeCooks.removeFirst();
+      cook.setBusy(true);
+      busyCooks.add(cook);
       return cook;
     }
-    throw new IllegalStateException("No Cook available.");
+    // if freeCooks is empty, and we have a busy cook, overload them
+    if (!busyCooks.isEmpty()) {
+      System.out.println("All cooks are busy! Assigning an overworked cook.");
+      return busyCooks.getFirst();
+    }
+    // both lists are empty cuz we never hired
+    throw new IllegalStateException("No cooks employed at this branch.");
+  }
+
+  private void markCookFree(Cook cook) {
+    if (busyCooks.remove(cook)) {
+      cook.setBusy(false);
+      freeCooks.add(cook);
+    }
   }
 
   private DeliveryBoy findFreeDeliveryBoy() {
@@ -97,7 +109,6 @@ public class Branch {
     Order order = orderProcess.getOrder();
     Coordinator coordinator = findFreeCoordinator();
     KitchenAid aid = findFreeKitchenAid();
-    Cook cook = findFreeCook();
 
     coordinator.checkOrder(storage, orderProcess);
     List<Pizza> preparedPizzas = aid.preparePizza(storage, pizzaBuilder, order);
@@ -107,9 +118,15 @@ public class Branch {
     System.out.println("Prepared all raw pizzas for an order.");
     orderProcess.setState(OrderState.PROCESSING);
 
+    List<Cook> assignedCooks = new ArrayList<>();
+
     while (iterator.hasNext()) {
       Pizza pizza = iterator.next();
+
+      Cook cook = findFreeCook();
+      assignedCooks.add(cook);
       Pizza bakedPizza = cook.bakePizza(pizza);
+
       if (bakedPizza.getPizzaState() == PizzaState.BURNT) {
         Pizza burntPizza = aid.redoPizza(bakedPizza, storage, pizzaBuilder);
         iterator.add(burntPizza);
@@ -119,6 +136,11 @@ public class Branch {
         this.bakedPizzas.add(bakedPizza);
       }
     }
+
+    for (Cook cook : assignedCooks) {
+      markCookFree(cook);
+    }
+
     System.out.println("All pizzas baked for an order.");
     orderProcess.setState(OrderState.DELIVERING);
     System.out.println("Order is ready for delivery.");
