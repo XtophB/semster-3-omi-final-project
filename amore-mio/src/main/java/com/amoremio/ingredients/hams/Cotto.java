@@ -1,6 +1,6 @@
 package com.amoremio.ingredients.hams;
 
-import com.amoremio.ingredients.Ingredient;
+import com.amoremio.ingredients.Ham;
 import com.amoremio.ingredients.IngredientName;
 
 public class Cotto extends Ham {
