@@ -24,8 +24,6 @@ public class Branch {
   City city;
 
   private final List<OrderProcess> orderProcesses = new ArrayList<>();
-  private final List<Pizza> bakedPizzas = new ArrayList<>();
-
   private final List<Cook> freeCooks = new ArrayList<>();
   private final List<Cook> busyCooks = new ArrayList<>();
   private final List<DeliveryBoy> freeDeliveryBoys = new ArrayList<>();
@@ -106,20 +104,27 @@ public class Branch {
   public void processOrder(OrderProcess orderProcess) {
     orderProcesses.add(orderProcess);
     Order order = orderProcess.getOrder();
-    Coordinator coordinator = findFreeCoordinator();
-    KitchenAid aid = findFreeKitchenAid();
 
+    KitchenAid aid = findFreeKitchenAid();
+    List<Pizza> preparedPizzas = prepareOrder(order, orderProcess, aid);
+    List<Pizza> bakedPizzas = bakePizzas(preparedPizzas, aid, orderProcess);
+    completeOrder(orderProcess, bakedPizzas);
+    orderProcesses.remove(orderProcess);
+  }
+
+  private List<Pizza> prepareOrder(Order order, OrderProcess orderProcess, KitchenAid aid) {
+    Coordinator coordinator = findFreeCoordinator();
     coordinator.checkOrder(storage, orderProcess);
     List<Pizza> preparedPizzas = aid.preparePizza(storage, pizzaBuilder, order);
-    // use a local list so pizzas from previous orders are not re-processed
-    List<Pizza> pizzasToBake = new ArrayList<>(preparedPizzas);
-    // use iterator for modification while iterating to avoid ConcurrentModificationException
-    ListIterator<Pizza> iterator = pizzasToBake.listIterator();
     System.out.println("Prepared " + preparedPizzas.size() + " raw pizzas for this order.");
     orderProcess.setState(OrderState.PROCESSING);
+    return preparedPizzas;
+  }
 
+  private List<Pizza> bakePizzas(List<Pizza> preparedPizzas, KitchenAid aid, OrderProcess orderProcess) {
+    ListIterator<Pizza> iterator = preparedPizzas.listIterator();
     List<Cook> assignedCooks = new ArrayList<>();
-    float orderTotal = 0;
+    List<Pizza> bakedPizzas = new ArrayList<>();
 
     while (iterator.hasNext()) {
       Pizza pizza = iterator.next();
@@ -134,8 +139,7 @@ public class Branch {
         System.out.println("  Pizza burnt, re-adding for re-baking.");
         orderProcess.setState(OrderState.DELAYED);
       } else {
-        this.bakedPizzas.add(bakedPizza);
-        orderTotal += bakedPizza.getPrice();
+        bakedPizzas.add(bakedPizza);
         System.out.println("  Baked " + bakedPizza.getPizzaType()
             + " pizza - EUR " + String.format("%.2f", bakedPizza.getPrice()));
       }
@@ -144,16 +148,23 @@ public class Branch {
     for (Cook cook : assignedCooks) {
       markCookFree(cook);
     }
+    return bakedPizzas;
+  }
 
+  private void completeOrder(OrderProcess orderProcess, List<Pizza> bakedPizzas) {
+    float orderTotal = 0;
+    for (Pizza p : bakedPizzas) {
+      orderTotal += p.getPrice();
+    }
     System.out.println("All pizzas baked. Order total: EUR " + String.format("%.2f", orderTotal));
     orderProcess.setState(OrderState.DELIVERING);
     System.out.println("Order is ready for delivery.");
-    deliverOrder(orderProcess);
+    deliverOrder(orderProcess, bakedPizzas);
     System.out.println("Order delivered successfully.");
   }
 
-  private void deliverOrder(OrderProcess orderProcess) {
+  private void deliverOrder(OrderProcess orderProcess, List<Pizza> pizzas) {
     DeliveryBoy deliveryBoy = findFreeDeliveryBoy();
-    deliveryBoy.deliverOrder(orderProcess);
+    deliveryBoy.deliverOrder(orderProcess, pizzas);
   }
 }
