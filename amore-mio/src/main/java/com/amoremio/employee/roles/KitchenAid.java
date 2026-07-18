@@ -30,7 +30,12 @@ public class KitchenAid extends Employee {
       pizzaBuilder.buildDough(dough);
       pizzaBuilder.buildSauce(sauce);
 
-      List<Ingredient> toppings = pizza.getToppings();
+      // list of enums to map used to map to proper objects from storage retrieval
+      List<IngredientName> toppingNames = pizza.getToppings();
+      List<Ingredient> toppings = new ArrayList<>();
+      for (IngredientName name : toppingNames) {
+        toppings.add(storage.consumeIngredient(name));
+      }
       pizzaBuilder.buildToppings(toppings);
 
       preparedPizzas.add(pizzaBuilder.getPizza());
@@ -47,7 +52,13 @@ public class KitchenAid extends Employee {
     pizzaBuilder.buildDough(dough);
     pizzaBuilder.buildSauce(sauce);
 
-    List<Ingredient> toppings = burntPizza.getIngredients();
+    List<Ingredient> toppings = new ArrayList<>();
+    for (Ingredient ingredient : burntPizza.getIngredients()) {
+      IngredientName name = ingredient.getName();
+      if (name != IngredientName.DOUGH && name != IngredientName.SAUCE) {
+        toppings.add(storage.consumeIngredient(name));
+      }
+    }
     pizzaBuilder.buildToppings(toppings);
 
     return pizzaBuilder.getPizza();
