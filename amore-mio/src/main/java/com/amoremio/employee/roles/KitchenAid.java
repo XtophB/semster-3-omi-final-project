@@ -8,7 +8,7 @@ import com.amoremio.ingredients.Sauce;
 import com.amoremio.order.Order;
 import com.amoremio.order.OrderedPizza;
 import com.amoremio.pizza.Pizza;
-import com.amoremio.pizza.builders.AbstractPizzaBuilder;
+import com.amoremio.pizza.builders.PizzaBuilder;
 import com.amoremio.store.Storage;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class KitchenAid extends Employee {
    * @param order the order containing the pizzas to be created
    * @return a list of pizzas that have been prepared
    */
-  public List<Pizza> preparePizza(Storage storage, AbstractPizzaBuilder pizzaBuilder, Order order) {
+  public List<Pizza> preparePizza(Storage storage, PizzaBuilder pizzaBuilder, Order order) {
     List<OrderedPizza> orderedPizzas = order.getPizzaOrder();
     List<Pizza> preparedPizzas = new ArrayList<>();
     for (OrderedPizza pizza : orderedPizzas) {
@@ -69,7 +69,7 @@ public class KitchenAid extends Employee {
    * @param pizzaBuilder the same pizza builder used to create the original pizza
    * @return a new raw pizza object
    */
-  public Pizza redoPizza(Pizza burntPizza, Storage storage, AbstractPizzaBuilder pizzaBuilder) {
+  public Pizza redoPizza(Pizza burntPizza, Storage storage, PizzaBuilder pizzaBuilder) {
     pizzaBuilder.createPizza();
 
     Dough dough = (Dough) storage.consumeIngredient(IngredientName.DOUGH);

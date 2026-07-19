@@ -10,7 +10,7 @@ import com.amoremio.order.Order;
 import com.amoremio.order.OrderManagerSingleton;
 import com.amoremio.order.OrderedPizza;
 import com.amoremio.order.PaymentType;
-import com.amoremio.pizza.builders.AbstractPizzaBuilder;
+import com.amoremio.pizza.builders.PizzaBuilder;
 import com.amoremio.pizza.builders.NeapolitanBuilder;
 import com.amoremio.store.Branch;
 import com.amoremio.store.City;
@@ -39,7 +39,7 @@ public class Application {
     System.out.println();
 
     // Customizable pizza builder injections
-    AbstractPizzaBuilder pizzaBuilder = new NeapolitanBuilder();
+    PizzaBuilder pizzaBuilder = new NeapolitanBuilder();
     Branch villachBranch = new Branch(storage, pizzaBuilder, City.VILLACH);
 
     // Singleton and factory for employees

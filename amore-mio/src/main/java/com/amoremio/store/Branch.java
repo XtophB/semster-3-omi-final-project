@@ -10,7 +10,7 @@ import com.amoremio.order.OrderProcess;
 import com.amoremio.order.OrderState;
 import com.amoremio.pizza.Pizza;
 import com.amoremio.pizza.PizzaState;
-import com.amoremio.pizza.builders.AbstractPizzaBuilder;
+import com.amoremio.pizza.builders.PizzaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -25,7 +25,7 @@ public class Branch {
   private final List<KitchenAid> freeKitchenAids = new ArrayList<>();
   private final List<Coordinator> freeCoordinators = new ArrayList<>();
   Storage storage;
-  @Setter AbstractPizzaBuilder pizzaBuilder;
+  private PizzaBuilder pizzaBuilder;
   City city;
 
   /**
@@ -35,7 +35,7 @@ public class Branch {
    * @param builder the builder that defines what pizzas a branch can make
    * @param city the city where the branch is located in
    */
-  public Branch(Storage storage, AbstractPizzaBuilder builder, City city) {
+  public Branch(Storage storage, PizzaBuilder builder, City city) {
     this.storage = storage;
     this.pizzaBuilder = builder;
     this.city = city;
