@@ -19,7 +19,7 @@ import com.amoremio.store.Supplier;
 import java.util.List;
 
 /** A simulation class. */
-public class Application {
+public class MainDemo {
 
   /**
    * The main method where the simulation happens.
