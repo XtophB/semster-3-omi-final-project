@@ -31,7 +31,7 @@ public class Storage {
   }
 
   /**
-   * A method allowingn the restocking of missing ingredients.
+   * A method allowing the restocking of missing ingredients.
    *
    * @param ingredientList the list of ingredients to restock
    */
