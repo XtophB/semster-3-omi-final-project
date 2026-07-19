@@ -14,6 +14,7 @@ import com.amoremio.pizza.builders.PizzaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+
 /** Represents a physical store in a specific city. */
 public class Branch {
   private final List<OrderProcess> orderProcesses = new ArrayList<>();
@@ -172,6 +173,9 @@ public class Branch {
       if (bakedPizza.getPizzaState() == PizzaState.BURNT) {
         Pizza burntPizza = aid.redoPizza(bakedPizza, storage, pizzaBuilder);
         iterator.add(burntPizza);
+        iterator.previous();
+        // bug where burnt pizzas did not get readded to cooking queue as iterator
+        // never reached. iterator.add adds the pizzas behind the iterator.
         System.out.println("  Pizza burnt, re-adding for re-baking.");
         orderProcess.setState(OrderState.DELAYED);
       } else {
