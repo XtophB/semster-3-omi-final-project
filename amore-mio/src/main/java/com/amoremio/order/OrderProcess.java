@@ -2,8 +2,10 @@ package com.amoremio.order;
 
 import lombok.Getter;
 
-// There is no interface for this class as we have a 1:1 relationship and the customers are directly
-// added in the constructor
+// We don't have an interface for the publisher as there are no plans on extending the order. Each
+// order is the same, while it is true that an interface is needed to follow DIP (dependency
+// inversion principle -- depend on abstractions), it also violates the YANGI (you aren't gonna need
+// it) principle. This was a common problem in my se2 contribution.
 /**
  * The wrapper of the order object. This allows the observer pattern and allows observing the order.
  */
