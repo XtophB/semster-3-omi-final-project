@@ -14,8 +14,6 @@ import com.amoremio.pizza.builders.PizzaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import lombok.Setter;
-
 /** Represents a physical store in a specific city. */
 public class Branch {
   private final List<OrderProcess> orderProcesses = new ArrayList<>();
@@ -39,6 +37,22 @@ public class Branch {
     this.storage = storage;
     this.pizzaBuilder = builder;
     this.city = city;
+  }
+
+  /**
+   * Sets the pizza builder for this branch. Can only be changed when no orders are actively being
+   * processed, preventing a mid-order style switch.
+   *
+   * @param pizzaBuilder the new pizza builder to use
+   * @throws IllegalStateException if orders are currently being processed
+   * @throws IllegalArgumentException if pizzaBuilder is null
+   */
+  public void setPizzaBuilder(PizzaBuilder pizzaBuilder) {
+    if (!orderProcesses.isEmpty()) {
+      throw new IllegalStateException(
+          "Cannot change pizza builder while orders are being processed.");
+    }
+    this.pizzaBuilder = pizzaBuilder;
   }
 
   /**
